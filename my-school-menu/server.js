@@ -1,44 +1,32 @@
 const express = require('express');
-const fetch = require('node-fetch');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// 나이스 API 호출 함수
-async function fetchMenuFromAPI(date) {
-    const url = `https://open.neis.go.kr/hub/mealServiceDietInfo`;
-    const params = {
-        ATPT_OFCDC_SC_CODE: 'J10',
-        SD_SCHUL_CODE: '7531379',
-        MLSV_YMD: date,
-        KEY: '09688b9dfd7f46c1adce51e6ea',
-        Type: 'json'
-    };
-    const queryString = new URLSearchParams(params).toString();
-    const response = await fetch(`${url}?${queryString}`);
-    if (!response.ok) {
-        throw new Error('Failed to fetch menu data');
-    }
-    const data = await response.json();
-    return data;
-}
+// 메뉴 데이터 (직접 입력)
+const menuData = {
+    "2024-08-19": ["흰밥", "돈등뼈감자탕", "콘치즈반달돈가스", "삼색큐브묵무침", "사과치커리땅콩샐러드", "깍두기"],
+    "2024-08-20": ["기장밥", "왕만두국", "청양숯불닭고기찜", "알감자버터구이", "가지굴소스볶음", "짜먹는요구르트", "배추김치"],
+    "2024-08-21": ["참치김치밥버거", "꼬치어묵국", "불고기피도그피자", "뽕따", "깍두기"],
+    "2024-08-22": ["혼합잡곡밥", "쇠고기배추국", "떡갈비그라탕", "참나물진미채무침", "씨없는포도", "배추김치"],
+    "2024-08-23": ["흰밥", "미니가쓰오김치우동", "가치동", "양배추샐러드", "마늘바게트", "망고파인음료", "깍두기"],
+    "2024-08-26": ["흰밥", "순두부찌개", "수육*쌈장", "콩나물실파무침", "잡채김말이강정", "석류코코푸딩", "보쌈김치"],
+    "2024-08-27": ["흑미밥", "건새우아욱국", "매운돼지갈비찜", "로스티드콘해시브라운", "호두멸치볶음", "아이스홍시", "배추김치"],
+    "2024-08-28": ["한국식빠에야", "알리오올리오스파게티", "초코추러스", "허브소세지그린샐러드", "포두주스", "피클"],
+    "2024-08-29": ["차조수수밥", "쇠고기미역국", "훈제오리겨자무침", "불고기퀘사디아", "마늘쫑어묵볶음", "요구르트", "배추김치"],
+    "2024-08-30": ["기장밥", "부대찌개", "한우버섯불고기", "납작군만두", "새콤쫄면무침", "워터젤리", "깍두기"]
+};
 
-// API 엔드포인트
-app.get('/api/menu/:date', async (req, res) => {
+// 메뉴 데이터 제공 엔드포인트
+app.get('/api/menu/:date', (req, res) => {
     const date = req.params.date;
-
-    try {
-        const apiData = await fetchMenuFromAPI(date);
-        const menu = apiData.mealServiceDietInfo[1].row[0].DDISH_NM.split('<br/>') || ['메뉴 정보가 없습니다.'];
-
-        res.json({ menu });
-    } catch (error) {
-        console.error('Error fetching menu:', error.message);
-        res.status(500).json({ error: 'Failed to fetch menu data' });
-    }
+    const menu = menuData[date] || ["메뉴 정보가 없습니다."];
+    res.json({ menu });
 });
 
+// 정적 파일 서빙 (public 폴더에 index.html 등의 정적 파일이 있어야 함)
 app.use(express.static('public'));
 
+// 서버 시작
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
