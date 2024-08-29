@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // 초기 페이지 로드 시 현재 날짜 설정
     let currentDate = new Date();
     if (isWeekend(currentDate)) {
-        currentDate = getDate() - 1
+        currentDate = getNextDate(currentDate);
     }
     displayDate(currentDate);
     updateMenuUI(menuData[currentDate.toISOString().split('T')[0]] || ["메뉴 정보가 없습니다."]);
