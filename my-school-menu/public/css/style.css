@@ -249,7 +249,7 @@ body .page--container {
 .logo {
     width: 100px;
     height: 100px;
-    animation: logo-rotate-3d 8s infinite;
+    animation: logo-rotate-3d 10s infinite;
     transform-style: preserve-3d;
     perspective: 1000px;
 }
